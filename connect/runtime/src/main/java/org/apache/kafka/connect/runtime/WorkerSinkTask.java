@@ -356,14 +356,38 @@ class WorkerSinkTask extends WorkerTask {
             log.trace("Consuming message with key {}, value {}", msg.key(), msg.value());
             SchemaAndValue keyAndSchema = keyConverter.toConnectData(msg.topic(), msg.key());
             SchemaAndValue valueAndSchema = valueConverter.toConnectData(msg.topic(), msg.value());
-            if (valueAndSchema.value() != null)
-                messageBatch.add(
-                        new SinkRecord(msg.topic(), msg.partition(),
-                                keyAndSchema.schema(), keyAndSchema.value(),
-                                valueAndSchema.schema(), valueAndSchema.value(),
-                                msg.offset(),
-                                (msg.timestampType() == TimestampType.NO_TIMESTAMP_TYPE) ? null : msg.timestamp(),
-                                msg.timestampType())
+            if (valueAndSchema.value() == null)
+                valueAndSchema = valueConverter.toConnectData(msg.topic(), new byte[]{(byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0xee, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0xdc, (byte) 0x3, (byte) 0xa, (byte) 0x64, (byte) 0x75, (byte) 0x6d, 
+                    (byte) 0x6d, (byte) 0x79, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0xa, (byte) 0x64, (byte) 0x75, (byte) 0x6d, (byte) 0x6d, (byte) 0x79, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0, 
+                    (byte) 0x0});
+            messageBatch.add(
+                    new SinkRecord(msg.topic(), msg.partition(),
+                            keyAndSchema.schema(), keyAndSchema.value(),
+                            valueAndSchema.schema(), valueAndSchema.value(),
+                            msg.offset(),
+                            (msg.timestampType() == TimestampType.NO_TIMESTAMP_TYPE) ? null : msg.timestamp(),
+                            msg.timestampType())
             );
         }
     }
