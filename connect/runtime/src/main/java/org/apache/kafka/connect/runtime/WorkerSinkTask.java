@@ -356,13 +356,14 @@ class WorkerSinkTask extends WorkerTask {
             log.trace("Consuming message with key {}, value {}", msg.key(), msg.value());
             SchemaAndValue keyAndSchema = keyConverter.toConnectData(msg.topic(), msg.key());
             SchemaAndValue valueAndSchema = valueConverter.toConnectData(msg.topic(), msg.value());
-            messageBatch.add(
-                    new SinkRecord(msg.topic(), msg.partition(),
-                            keyAndSchema.schema(), keyAndSchema.value(),
-                            valueAndSchema.schema(), valueAndSchema.value(),
-                            msg.offset(),
-                            (msg.timestampType() == TimestampType.NO_TIMESTAMP_TYPE) ? null : msg.timestamp(),
-                            msg.timestampType())
+            if (valueAndSchema.value() != null)
+                messageBatch.add(
+                        new SinkRecord(msg.topic(), msg.partition(),
+                                keyAndSchema.schema(), keyAndSchema.value(),
+                                valueAndSchema.schema(), valueAndSchema.value(),
+                                msg.offset(),
+                                (msg.timestampType() == TimestampType.NO_TIMESTAMP_TYPE) ? null : msg.timestamp(),
+                                msg.timestampType())
             );
         }
     }
